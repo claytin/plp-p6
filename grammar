@@ -1,0 +1,14 @@
+(* ISO/IEC 14977 : 1996(E) *)
+
+(* top production *)
+program = expr
+
+expr = value | u-expr | b-expr | declr | id | app | ifthenelse
+
+value   = literal
+literal = number | string | bool
+u-expr  = minus expression | nop ' ' expression
+b-expr  = expression b-operator expression
+
+minus = '-'
+nop   = 'not'
