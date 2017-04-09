@@ -40,5 +40,6 @@ grammar PLP::Grammar {
     rule var-dec        { <var> <id> <equal> <expression> }
     rule fun-dec        { <fun> <id> <id>* <equal> <expression> }
 }
+say PLP.parse('let var y = 2 + y in let fun f x = 5 in f')
 
 say PLP::Grammar.parse("let var id x = x in x");
