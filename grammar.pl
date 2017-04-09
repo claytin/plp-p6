@@ -38,7 +38,7 @@ grammar PLP::Grammar {
     rule declaration    { <let> <functional-dec> <in> <expression> }
     rule functional-dec { <var-dec> | <fun-dec> }
     rule var-dec        { <var> <id> <equal> <expression> }
-    rule fun-dec        { <fun> <id>+ <equal> <expression> }
+    rule fun-dec        { <fun> <id> <id>* <equal> <expression> }
 }
 
 say PLP::Grammar.parse("let var id x = x in x");
