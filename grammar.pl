@@ -1,16 +1,16 @@
-use v6;
+use v6.c;
 
-grammar PLP {
-    ## Non recursive productions)
-    #  Literal values
-    my regex number { \d+ }
-    my regex quote  { < " ' > }
-    my regex string { <quote> <-[ " ]>* <quote> }
-    my regex bool   { true | false }
+grammar PLP::Grammar {
+    # Non recursive productions) ##
+    # Literal values
+    token number { \d+ }
+    token quote  { < " ' > }
+    regex string { <quote> <-[ " ]>* <quote> } # beacause token doesn't work
+    token bool   { true | false }
 
-    my regex id     { <[a..zA..Z]> (<number> | <[a..zA..Z]>)* }
+    token id     { <[a..zA..Z]> (<number> | <[a..zA..Z]>)* }
 
-    ## Operators and reserved words (regexes?)
+    # Operators and reserved words
     token unary-op  { '-' | not }
     token binary-op { < - + and or == ++ > }
     token equal     { '=' }
@@ -19,13 +19,14 @@ grammar PLP {
     token in        { in }
     token fun       { fun }
 
-    ## Program
+    # Program ##
     rule TOP        { ^ <expression> $ }
 
+    # Expresssions ##
     rule expression { <head-expr> <line-expr>?
                     | <unary-op> <expression> <line-expr>? }
 
-    ## Expresssions
+    
     rule head-expr { <value> | <id> | <declaration> }
     rule line-expr { <binary-op> <expression> <line-expr>? }
 
@@ -40,6 +41,4 @@ grammar PLP {
     rule fun-dec        { <fun> <id>+ <equal> <expression> }
 }
 
-say PLP.parse("'a' + aloha - 0");
-
-say PLP.parse('let var id = x in x');
+say PLP::Grammar.parse("let var id x = x in x");
