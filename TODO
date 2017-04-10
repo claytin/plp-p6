@@ -1,3 +1,2 @@
-1. Fix id list
-2. Break the grammar into smaller grammars
-3. Add length to <u-expr>
+1. Break the grammar into smaller grammars
+2. Add length to <u-expr>
