@@ -1,7 +1,7 @@
 use v6.c;
 
 grammar PLP::Grammar {
-    # Non recursive productions) ##
+    # Non recursive productions ##
     # Literal values
     token number { \d+ }
     token quote  { < " ' > }
@@ -26,7 +26,7 @@ grammar PLP::Grammar {
     rule expression { <head-expr> <line-expr>?
                     | <unary-op> <expression> <line-expr>? }
 
-    
+
     rule head-expr { <value> | <id> | <declaration> }
     rule line-expr { <binary-op> <expression> <line-expr>? }
 
@@ -42,4 +42,6 @@ grammar PLP::Grammar {
 }
 say PLP.parse('let var y = 2 + y in let fun f x = 5 in f')
 
-say PLP::Grammar.parse("let var id x = x in x");
+say PLP::Grammar.parse("'aloha'");
+say PLP::Grammar.parse("let fun id x = x in x");
+say PLP::Grammar.parse("let var b = 0 in let fun pi = 31416 in x");
