@@ -1,6 +1,9 @@
 use v6;
 
-use Expr::Grammar;
+use lib "lib";
 
-say Expr.parse("a + 'oi'");
-say Expr.parse("let var x = 0 in x + x");
+use Expr;
+use Func;
+
+say so Expr::Grammar.parse("Hallo");
+say so Func::Grammar.parse("let fun id x = x in x");
