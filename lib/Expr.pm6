@@ -19,6 +19,7 @@ grammar Expr::Grammar is export {
     token let       { let }
     token var       { var }
     token in        { in }
+    token comma     { ',' }
 
     # Program ##
     rule TOP        { ^ <expression> $ }
@@ -36,6 +37,7 @@ grammar Expr::Grammar is export {
     rule literal { <number> | <string> | <bool> }
 
     # Declaration
-    rule declaration { <let> <var-dec> (',' <var-dec>)* <in> <expression> }
+    rule declaration { <let> <dec-list> <in> <expression> }
+    rule dec-list    { <var-dec> (<comma> <var-dec>)* }
     rule var-dec     { <var> <id> <equal> <expression> }
 }
