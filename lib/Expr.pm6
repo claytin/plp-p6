@@ -1,6 +1,8 @@
-use v6.c;
+use v6;
 
-grammar PLP::Grammar {
+unit module Expr;
+
+grammar Expr::Grammar is export {
     # Non recursive productions ##
     # Literal values
     token number { \d+ }
@@ -17,7 +19,6 @@ grammar PLP::Grammar {
     token let       { let }
     token var       { var }
     token in        { in }
-    token fun       { fun }
 
     # Program ##
     rule TOP        { ^ <expression> $ }
@@ -35,13 +36,6 @@ grammar PLP::Grammar {
     rule literal { <number> | <string> | <bool> }
 
     # Declaration
-    rule declaration    { <let> <functional-dec> <in> <expression> }
-    rule functional-dec { <var-dec> | <fun-dec> }
-    rule var-dec        { <var> <id> <equal> <expression> }
-    rule fun-dec        { <fun> <id> <id>* <equal> <expression> }
+    rule declaration { <let> <var-dec> (',' <var-dec>)* <in> <expression> }
+    rule var-dec     { <var> <id> <equal> <expression> }
 }
-say PLP.parse('let var y = 2 + y in let fun f x = 5 in f')
-
-say PLP::Grammar.parse("'aloha'");
-say PLP::Grammar.parse("let fun id x = x in x");
-say PLP::Grammar.parse("let var b = 0 in let fun pi = 31416 in x");
