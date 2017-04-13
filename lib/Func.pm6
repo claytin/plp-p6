@@ -2,16 +2,13 @@ use Expr;
 
 unit module Func;
 
-
 grammar Func::Grammar is Expr::Grammar {
     token fun  { fun }
     token if   { if }
     token then { then }
     token else { else }
 
-    rule expression { <head-expr> <line-expr>?
-                    | <unary-op> <expression> <line-expr>?
-                    | <ifthenelse> }
+    rule expression:sym<ife> { <ifthenelse> }
 
     rule declaration    { <let> <dec-list> <in> <expression> }
     rule dec-list       { <functional-dec> (<comma> <functional-dec>)* }

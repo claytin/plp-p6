@@ -25,9 +25,9 @@ grammar Expr::Grammar is export {
     rule TOP        { ^ <expression> $ }
 
     # Expresssions ##
-    rule expression { <head-expr> <line-expr>?
-                    | <unary-op> <expression> <line-expr>? }
-
+    proto rule expression {*}
+          rule expression:sym<head>  { <head-expr> <line-expr>? }
+          rule expression:sym<unary> { <unary-op> <expression> <line-expr>? }
 
     rule head-expr { <value> | <id> | <declaration> }
     rule line-expr { <binary-op> <expression> <line-expr>? }
