@@ -9,7 +9,6 @@ grammar Expr::Grammar is export {
     token quote  { < " ' > }
     regex string { <quote> <-[ " ]>* <quote> } # beacause token doesn't work
     token bool   { true | false }
-
     token id     { <[a..zA..Z]> (<number> | <[a..zA..Z]>)* }
 
     # Operators and reserved words
@@ -26,8 +25,8 @@ grammar Expr::Grammar is export {
 
     # Expresssions ##
     proto rule expression {*}
-          rule expression:sym<head>  { <head-expr> <line-expr>? }
-          rule expression:sym<unary> { <unary-op> <expression> <line-expr>? }
+          rule expression:sym<head> { <head-expr> <line-expr>? }
+          rule expression:sym<unry> { <unary-op> <expression> <line-expr>? }
 
     rule head-expr { <value> | <id> | <declaration> }
     rule line-expr { <binary-op> <expression> <line-expr>? }
