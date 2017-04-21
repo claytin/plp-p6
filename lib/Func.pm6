@@ -2,27 +2,24 @@ use Expr;
 
 unit module Func;
 
-grammar Func::Grammar is Expr::Grammar {
-    token fun   { fun }
-    token if    { if }
-    token then  { then }
-    token else  { else }
-    token oparn { '(' }
-    token cparn { ')' }
+grammar FuncI is ExprII is export {
+    token fun  { fun }
+    token if   { if }
+    token then { then }
+    token else { else }
 
-    rule expression:sym<app> { <application> }
-    rule expression:sym<if>  { <ifthenelse> }
+    # Expresssions ##
+    rule expr:sym<app> { <id> <oparn> <expr-list> <cparn> }
+    rule expr:sym<if>  { <if> <expr> <then> <expr> <else> <expr> }
 
-    rule declaration    { <let> <dec-list> <in> <expression> }
-    rule dec-list       { <functional-dec> (<comma> <functional-dec>)* }
+    rule expr-list { <expr> (<comma> <expr>)* }
 
-    rule functional-dec { <var-dec> | <fun-dec> }
-    rule fun-dec        { <fun> <id> <params> <equal> <expression> }
-    rule params         { <id>+ }
+    # Declaration ##
+    rule functional-dec { <fun-dec> | <var-dec> }
 
-    rule application    { <id> <oparn> <expr-list> <cparn> }
-    rule expr-list      { <expression> (<comma> <expression>)* }
+    # Function
+    rule fun-dec { <fun> <id> <params> <equal> <expr> }
+    rule params  { <id> <id>* }
 
-    rule ifthenelse     { <if> <expression> <then> <expression>
-                          <else> <expression>}
+    rule dec-list { <functional-dec> (<comma> <functional-dec>)* }
  }
