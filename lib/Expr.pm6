@@ -2,41 +2,64 @@ use v6;
 
 unit module Expr;
 
-grammar Expr::Grammar is export {
+grammar ExprI is export {
     # Non recursive productions ##
-    # Literal values
-    token number { \d+ }
+    # Misc
     token quote  { < " ' > }
-    regex string { <quote> <-[ " ]>* <quote> } # beacause token doesn't work
-    token bool   { true | false }
-    token id     { <[a..zA..Z]> (<number> | <[a..zA..Z]>)* }
 
-    # Operators and reserved words
-    token unary-op  { '-' | not }
-    token binary-op { < - + and or == ++ > }
-    token equal     { '=' }
-    token let       { let }
-    token var       { var }
-    token in        { in }
-    token comma     { ',' }
+    # Literal values
+    proto token literal { * }
+          token literal:sym<number> { \d+ }
+          token literal:sym<bool>   { true | false }
+          regex literal:sym<string> { <quote> <-[ " ]>* <quote> }
 
-    # Program ##
-    rule TOP        { ^ <expression> $ }
+    # Operators
+    token oparn  { '(' } # paranthesis are a sort of operator
+    token cparn  { ')' } # ...
+    token uny-op { '-' | not }
+    token bin-op { < - + * and or \< == ^^ > }
+
+    ## Program ##
+    rule TOP { ^ <expr> $ }
 
     # Expresssions ##
-    proto rule expression {*}
-          rule expression:sym<head> { <head-expr> <line-expr>? }
-          rule expression:sym<unry> { <unary-op> <expression> <line-expr>? }
+    proto rule expr { * }
+          rule expr:sym<parn> { <oparn> <expr> <cparn> <line-expr>?}
+          rule expr:sym<head> { <head-expr> <line-expr>? }
+          rule expr:sym<unry> { <uny-op> <expr> <line-expr>? }
 
-    rule head-expr { <value> | <id> | <declaration> }
-    rule line-expr { <binary-op> <expression> <line-expr>? }
+    proto rule head-expr { * }
+          rule head-expr:sym<val> { <value> }
+
+    rule line-expr { <bin-op> <expr> <line-expr>? }
 
     # Values
-    rule value   { <literal> }
-    rule literal { <number> | <string> | <bool> }
+    proto rule value { * }
+          rule value:sym<lit> { <literal> }
 
+}
+
+grammar ExprII is ExprI is export {
+    # Non recursive productions ##
+    token id { <[a..zA..Z]> (<number> | <[a..zA..Z]>)* }
+
+    # Operators
+    token equal { '=' }
+
+    # Reserved keywords
+    token let { let }
+    token var { var }
+    token in  { in }
+
+    # Separator
+    token comma { ',' }
+
+    # Expresssions ##
     # Declaration
-    rule declaration { <let> <dec-list> <in> <expression> }
-    rule dec-list    { <var-dec> (<comma> <var-dec>)* }
-    rule var-dec     { <var> <id> <equal> <expression> }
+    rule expr:sym<dec> { <let> <dec-list> <in> <expr> }
+
+    rule head-expr:sym<id>  { <id> }
+
+    rule dec-list { <var-dec> (<comma> <var-dec>)* }
+    rule var-dec  { <var> <id> <equal> <expr> }
 }
