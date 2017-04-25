@@ -25,7 +25,7 @@ method bin-op:sym<+>    ($/) { @token.push($/.Str => Int) }
 method bin-op:sym<*>    ($/) { @token.push($/.Str => Int) }
 method bin-op:sym<and>  ($/) { @token.push($/.Str => Bool) }
 method bin-op:sym<or>   ($/) { @token.push($/.Str => Bool) }
-method bin-op:sym<\>>   ($/) { @token.push($/.Str => Any) }
+method bin-op:sym<\>>   ($/) { @token.push($/.Str => Int) }
 method bin-op:sym<'=='> ($/) { @token.push($/.Str => Any) }
 method bin-op:sym<^^>   ($/) { @token.push($/.Str => Str) }
 
