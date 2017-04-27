@@ -1,6 +1,6 @@
 unit class EvalExprI;
 
-method !compat ($op, @operand) {
+sub compat ($op, @operand) {
     if @operand.elems > 1 {
         return @operand[0].value.WHAT === @operand[1].value.WHAT &&
                @operand[0].value.WHAT === $op.value &&
@@ -10,9 +10,9 @@ method !compat ($op, @operand) {
     }
 }
 
-method !apply ($op, @operand) {
+sub apply ($op, @operand) {
     die "Err: types do not match in expression"
-        unless self.compat($op, @operand);
+        unless compat($op, @operand);
 
     given $op.key {
         when '+'   { return 'V' => @operand[0].value + @operand[1].value }
@@ -39,12 +39,11 @@ method eval (@tkstream, %prcd) {
 
     say @tkstream.head.key;
 
-    until @tkstream.elems == @wrk.elems == 1 &&
-          @tkstream.head.key eq @wrk.head.key eq '$' {
+    until @tkstream.elems == @wrk.elems == 1 {
 
-               # my $tk = @tkstream.shift if @tkstream.head.key ne '$';
-          my $tk = @tkstream.head.key ne '$' ?? @tkstream.shift
-                                             !! '$' => Nil;
+        # my $tk = @tkstream.shift if @tkstream.head.key ne '$';
+        my $tk = @tkstream.head.key ne '$' ?? @tkstream.shift
+                                           !! @tkstream.head;
 
         if %prcd{@wrk[@wrk.end].key}{$tk.key} === Less {
             @wrk.push($tk);
@@ -64,15 +63,16 @@ method eval (@tkstream, %prcd) {
                     @operand.push(@reduce.pop) if $aux.key ne 'U-' &&
                                                   $aux.key ne 'not' ;
 
-                    @reduce.push(self.apply($aux, @operand));
+                    @reduce.push(apply($aux, @operand));
                     $flux ~= ", (apply & push(R))";
                 }
             }
 
-            @wrk.push($tk);
+            @wrk.push($tk) unless @tkstream.head.key eq '$';
         }
         say $flux; $flux = "";
         say @tkstream, " <> ", @wrk;
+        # say "hi", @tkstream.head.key, " <> ", @wrk.head.key;
     }
 
     return @reduce.pop;
