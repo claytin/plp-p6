@@ -5,6 +5,9 @@ unit grammar Grammar::Expr::II is Grammar::Expr::I;
 # Non recursive productions ##
 token id { <[a..zA..Z]> [$<number> | <[a..zA..Z]>]* }
 
+# Separators
+token comma { ',' }
+
 # Operators
 token equal { '=' }
 
@@ -12,9 +15,6 @@ token equal { '=' }
 token let { let }
 token var { var }
 token in  { in }
-
-# Separator
-token comma { ',' }
 
 # Expresssions ##
 # Declaration
