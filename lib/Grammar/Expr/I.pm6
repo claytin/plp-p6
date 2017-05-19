@@ -3,48 +3,45 @@ use v6;
 unit grammar Grammar::Expr::I;
 
 # Non recursive productions ##
-# Misc
-token quote  { < " ' > }
-
 # Literal values
 proto token literal { * }
       token literal:sym<number> { \d+ }
       token literal:sym<bool>   { true | false }
-      token literal:sym<string> { <quote> <-[ " ]>* <quote> }
+      token literal:sym<string> { < " ' > <-[ " ]>* < " ' > }
+
+# Separators
+token oparn { '(' }
+token cparn { ')' }
 
 # Operators ##
-token oparn { '(' } # paranthesis are a sort of operator
-token cparn { ')' } # ...
-
 # Unary
-proto token uny-op { * }
-      token uny-op:sym<->   { <sym> }
-      token uny-op:sym<not> { <sym> }
+proto token u-op { * }
+      token u-op:sym<->   { <sym> }
+      token u-op:sym<not> { <sym> }
 
 # Binary
-proto token bin-op { * }
-      token bin-op:sym<->    { <sym> }
-      token bin-op:sym<+>    { <sym> }
-      token bin-op:sym<*>    { <sym> }
-      token bin-op:sym<and>  { <sym> }
-      token bin-op:sym<or>   { <sym> }
-      token bin-op:sym<\>>   { <sym> }
-      token bin-op:sym<'=='> { <sym> }
-      token bin-op:sym<^^>   { <sym> }
+proto token b-op { * }
+      token b-op:sym<->    { <sym> }
+      token b-op:sym<+>    { <sym> }
+      token b-op:sym<*>    { <sym> }
+      token b-op:sym<and>  { <sym> }
+      token b-op:sym<or>   { <sym> }
+      token b-op:sym<\>>   { <sym> }
+      token b-op:sym<'=='> { <sym> }
+      token b-op:sym<^^>   { <sym> }
 
 ## Program ##
 rule TOP { ^ <expr> $ }
 
 # Expresssions ##
 proto rule expr { * }
-      rule expr:sym<parn> { <oparn> <expr> <cparn> <line-expr>?}
       rule expr:sym<head> { <head-expr> <line-expr>? }
-      rule expr:sym<unry> { <uny-op> <expr> <line-expr>? }
+      rule expr:sym<unry> { <u-op> <expr> <line-expr>? }
 
 proto rule head-expr { * }
       rule head-expr:sym<val> { <value> }
 
-rule line-expr { <bin-op> <expr> <line-expr>? }
+rule line-expr { <b-op> <expr> <line-expr>? }
 
 # Values
 proto rule value { * }
