@@ -2,7 +2,7 @@ use v6;
 
 use Grammar::Expr::I;
 
-unit class Actions::Class::I;
+unit class Action::Expr::I;
 
 my @token;
 
