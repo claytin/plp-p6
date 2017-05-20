@@ -2,22 +2,24 @@ use Grammar::Expr::II;
 
 unit grammar Grammar::Func::I is Grammar::Expr::II;
 
+# Keywords
 token fun  { fun }
 token if   { if }
 token then { then }
 token else { else }
 
 # Expresssions ##
-rule expr:sym<app> { <id> <oparn> <expr-list> <cparn> }
-rule expr:sym<if>  { <if> <expr> <then> <expr> <else> <expr> }
+rule expr0:sym<if>  { <if> <predicate> <then> <if-expr> <else> <else-expr> }
+     # with aliases
+     rule predicate { <expr4> }
+     rule if-expr   { <expr4> }
+     rule else-expr { <expr4> }
 
-rule expr-list { <expr> +% <comma> }
+rule expr0:sym<app> { <id> <oparn> <expr-list> <cparn> } # function application
+     # wich has arguments
+     rule expr-list { <expr4> +% <comma> }
 
-# Declaration ##
-rule functional-dec { <fun-dec> | <var-dec> }
-
-# Function
-rule fun-dec { <fun> <id> <params> <equal> <expr> }
-rule params  { <id> <id>* }
-
-rule dec-list { <functional-dec> +% <comma> }
+# Function declaration ##
+rule dec:sym<fun> { <fun> <id> <params> <equal> <expr4> }
+     # wich has parameters
+     rule params { <id> <id>* }
