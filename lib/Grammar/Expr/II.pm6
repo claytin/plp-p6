@@ -9,18 +9,19 @@ token id { <[a..zA..Z]> [$<number> | <[a..zA..Z]>]* }
 token comma { ',' }
 
 # Operators
-token equal { '=' }
+token equal { '=' } # this is the precedence 5 operator
 
-# Reserved keywords
+# Keywords
 token let { let }
 token var { var }
 token in  { in }
 
 # Expresssions ##
-# Declaration
-rule expr:sym<dec> { <let> <dec-list> <in> <expr> }
+rule expr0:sym<id>  { <id> }
+rule expr0:sym<dec> { <let> <dec-list> <in> <expr4> }
+     # where declarations list is
+     rule dec-list { <dec> +% <comma> }
 
-rule head-expr:sym<id>  { <id> }
-
-rule dec-list { <var-dec> (<comma> <var-dec>)* }
-rule var-dec  { <var> <id> <equal> <expr> }
+# Variable declaraion ##
+proto rule dec { * }
+      rule dec:sym<var> { <var> <id> <equal> <expr4> }
