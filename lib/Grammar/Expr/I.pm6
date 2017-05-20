@@ -14,34 +14,54 @@ token oparn { '(' }
 token cparn { ')' }
 
 # Operators ##
+# Binary
+proto token b-op4 { * }
+      token b-op4:sym<\>>   { <sym> }
+      token b-op4:sym<'=='> { <sym> }
+
+proto token b-op3 { * }
+      token b-op3:sym<->  { <sym> }
+      token b-op3:sym<+>  { <sym> }
+      token b-op3:sym<^^> { <sym> }
+      token b-op3:sym<or> { <sym> }
+
+proto token b-op2 { * }
+      token b-op2:sym<*>   { <sym> }
+      token b-op2:sym<and> { <sym> }
+
 # Unary
-proto token u-op { * }
+proto token u-op { * } # these are the precedence 0 operators
       token u-op:sym<->   { <sym> }
       token u-op:sym<not> { <sym> }
 
-# Binary
-proto token b-op { * }
-      token b-op:sym<->    { <sym> }
-      token b-op:sym<+>    { <sym> }
-      token b-op:sym<*>    { <sym> }
-      token b-op:sym<and>  { <sym> }
-      token b-op:sym<or>   { <sym> }
-      token b-op:sym<\>>   { <sym> }
-      token b-op:sym<'=='> { <sym> }
-      token b-op:sym<^^>   { <sym> }
-
 ## Program ##
-rule TOP { ^ <expr> $ }
+rule TOP { ^ <expr4> $ }
 
 # Expresssions ##
-proto rule expr { * }
-      rule expr:sym<head> { <head-expr> <line-expr>? }
-      rule expr:sym<unry> { <u-op> <expr> <line-expr>? }
+# the following expressions could have been written in a better fashion, still
+# this represents the left recursion removal explicitly, wich is nice
+rule expr4 { <expr3> <expr4_> }
+proto rule expr4_ { * }
+      rule expr4_:sym<rec> { <b-op4> <expr4> <expr4_> }
+      rule expr4_:sym<eps> { {} } # eps stands for epsilon (empty production)
 
-proto rule head-expr { * }
-      rule head-expr:sym<val> { <value> }
+rule expr3 { <expr2> <expr3_> }
+proto rule expr3_ { * }
+      rule expr3_:sym<rec> { <b-op3> <expr3> <expr3_> }
+      rule expr3_:sym<eps> { {} }
 
-rule line-expr { <b-op> <expr> <line-expr>? }
+rule expr2 { <expr1> <expr2_> }
+proto rule expr2_ { * }
+      rule expr2_:sym<rec> { <b-op2> <expr2> <expr2_> }
+      rule expr2_:sym<eps> { {} }
+
+proto rule expr1 { * }
+      rule expr1:sym<unry> { <u-op> <expr0> }
+      rule expr1:sym<fin>  { <expr0> }
+
+proto rule expr0 { * }
+      rule expr0:sym<parn> { <oparn> <expr4> <cparn> }
+      rule expr0:sym<val>  { <value> }
 
 # Values
 proto rule value { * }
