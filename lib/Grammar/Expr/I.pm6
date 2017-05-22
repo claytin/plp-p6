@@ -2,18 +2,19 @@ use v6;
 
 unit grammar Grammar::Expr::I;
 
-# Non recursive productions ##
-# Literal values
+## Non recursive productions ##
+# Literals ##
 proto token literal { * }
       token literal:sym<number> { \d+ }
       token literal:sym<bool>   { true | false }
       token literal:sym<string> { < " ' > <-[ " ]>* < " ' > }
 
-# Separators
+# Separators ##
 token oparn { '(' }
 token cparn { ')' }
 
 # Operators ##
+# separated by precedence, loosest-tightest
 # Binary
 proto token b-op4 { * }
       token b-op4:sym<\>>   { <sym> }
@@ -30,7 +31,8 @@ proto token b-op2 { * }
       token b-op2:sym<and> { <sym> }
 
 # Unary
-proto token u-op { * } # these are the precedence 0 operators
+# these are the tightests precedence (1) operators
+proto token u-op { * }
       token u-op:sym<->   { <sym> }
       token u-op:sym<not> { <sym> }
 
@@ -39,7 +41,7 @@ rule TOP { ^ <expr4> $ }
 
 # Expresssions ##
 # the following expressions could have been written in a better fashion, still
-# this represents the left recursion removal explicitly, wich is nice
+# they represent the left recursion removal explicitly, wich is nice
 rule expr4 { <expr3> <expr4_> }
 proto rule expr4_ { * }
       rule expr4_:sym<rec> { <b-op4> <expr4> <expr4_> }
