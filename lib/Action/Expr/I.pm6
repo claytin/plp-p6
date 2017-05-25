@@ -22,14 +22,26 @@ method TOP ($/) { make @!val.pop }
 # FOR ALL expr*_:sym<rec> methods
 # they all behave similarly, they call !compat for type checking and if those
 # are compatible, proceed to apply the correspondent operator (*-opN for exprN)
-method expr3_:sym<rec> ($/) {
-    if self!compat($<b-op3>.made, @!val[@!val.end], @!val[@!val.end - 1]) {
+method expr4_:sym<rec> ($/) {
+    if self!compat($<b-op4>.made, @!val[@!val.end], @!val[@!val.end - 1]) {
 
         # these pops grant the correct order of the parameters
         my $p2 = @!val.pop;
         my $p1 = @!val.pop;
 
         # apply the operator
+        @!val.push(($<b-op4>.made)($p1, $p2));
+    } else {
+        die "Err: type of the operands don't match for '$<b-op4>'";
+    }
+}
+
+method expr3_:sym<rec> ($/) {
+    if self!compat($<b-op3>.made, @!val[@!val.end], @!val[@!val.end - 1]) {
+
+        my $p2 = @!val.pop;
+        my $p1 = @!val.pop;
+
         @!val.push(($<b-op3>.made)($p1, $p2));
     } else {
         die "Err: type of the operands don't match for '$<b-op3>'";
