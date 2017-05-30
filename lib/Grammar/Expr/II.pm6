@@ -18,7 +18,7 @@ token in  { in }
 
 # Expresssions ##
 rule expr0:sym<id>  { <id> }
-rule expr0:sym<dec> { <let> <dec-list> <in> <expr4> }
+rule expr0:sym<let> { <let> <dec-list> <in> <expr4> }
      # where declarations list is
      rule dec-list { <dec> +% <comma> }
 
