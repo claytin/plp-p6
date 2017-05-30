@@ -1,0 +1,54 @@
+#!/usr/bin/env perl6
+
+use v6;
+
+use lib 'lib';
+
+use Grammar::Expr::I;
+use Grammar::Expr::II;
+
+use Action::Expr::I;
+use Action::Expr::II;
+
+use Util::Env;
+
+sub MAIN (Str :$lang) {
+    my $parser;
+    my $actions;
+    my $env;
+
+    given $lang {
+        when /E1 | e1/ {
+            $parser  = Grammar::Expr::I.new;
+            $actions = Action::Expr::I.new;
+
+            while 1 {
+                say "= " ~ $parser.parse(get-expr(), actions => $actions).made;
+            }
+        }
+
+        when /E2 | e2/ {
+            $parser  = Grammar::Expr::II.new;
+            $actions = Action::Expr::II.new(env => Util::Environment.new);
+
+            while 1 {
+                say "= " ~ $parser.parse( get-expr()
+                                        , actions => $actions).made;
+            }
+        }
+
+        default { die "Err: Unknown language $_! Try something else" }
+    }
+
+}
+
+sub get-expr () {
+    my Str $input;
+
+    while ($input ~= (prompt "> ") ~ "\n") !~~ /';'/ {
+        { shell "clear"; $input = "" } if $input.chomp eq "clear";
+        exit                           if $input.chomp eq "exit";
+    }
+
+    return $input.chop(2);
+}
