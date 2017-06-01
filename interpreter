@@ -25,7 +25,8 @@ sub MAIN (Str :$lang) {
             $actions = Action::Expr::I.new;
 
             while 1 {
-                say "= " ~ $parser.parse(get-expr(), actions => $actions).made;
+                say "« " ~ $parser.parse( get-expr()
+                                        , actions => $actions).made ~ " »";
             }
         }
 
@@ -34,18 +35,18 @@ sub MAIN (Str :$lang) {
             $actions = Action::Expr::II.new(env => Util::Environment.new);
 
             while 1 {
-                say "= " ~ $parser.parse( get-expr()
-                                        , actions => $actions).made;
+                say "« " ~ $parser.parse( get-expr()
+                                        , actions => $actions).made ~ " »";
             }
         }
 
-        when /F1 | f2/ {
+        when /F1 | f1/ {
             $parser  = Grammar::Func::I.new;
             $actions = Action::Func::I.new(env => Util::Environment.new);
 
             while 1 {
-                say "= " ~ $parser.parse( get-expr()
-                                        , actions => $actions).made;
+                say "« " ~ $parser.parse( get-expr()
+                                        , actions => $actions).made ~ " »";
             }
         }
 
