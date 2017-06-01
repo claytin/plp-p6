@@ -6,9 +6,11 @@ use lib 'lib';
 
 use Grammar::Expr::I;
 use Grammar::Expr::II;
+use Grammar::Func::I;
 
 use Action::Expr::I;
 use Action::Expr::II;
+use Action::Func::I;
 
 use Util::Env;
 
@@ -30,6 +32,16 @@ sub MAIN (Str :$lang) {
         when /E2 | e2/ {
             $parser  = Grammar::Expr::II.new;
             $actions = Action::Expr::II.new(env => Util::Environment.new);
+
+            while 1 {
+                say "= " ~ $parser.parse( get-expr()
+                                        , actions => $actions).made;
+            }
+        }
+
+        when /F1 | f2/ {
+            $parser  = Grammar::Func::I.new;
+            $actions = Action::Func::I.new(env => Util::Environment.new);
 
             while 1 {
                 say "= " ~ $parser.parse( get-expr()
