@@ -11,8 +11,8 @@ method fun ($/) { $.env.inc }
 
 method expr0:sym<if> ($/) {
     # --
-    die "Err: type of the operands don't match for '" ~ $/.Str ~ "'"
-        if (my $res = eval $<b-op4>.made, @.val) ~~ Nil;
+    try my $res = eval @.val;
+    die "Err: type of the operands don't match for 'if'" if $!;
 
     @.val.push: $res;
 }
