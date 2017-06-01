@@ -1,7 +1,7 @@
 use v6;
 
 use Grammar::Expr::I;
-use Util::Evaluator;
+use Util::Eval;
 
 unit class Action::Expr::I;
 
