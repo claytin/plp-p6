@@ -14,24 +14,24 @@ method TOP ($/) { make @.val.pop }
 # see Util::Evaluator for more information on sub eval
 method expr4_:sym<rec> ($/) {
     # --
-    die "Err: type of the operands don't match for '$<b-op4>'"
-        if (my $res = eval $<b-op4>.made, @.val) ~~ Nil;
+    try my $res = eval $<b-op4>.made, @.val;
+    die "Err: type of the operands don't match for '$<b-op4>'" if $!;
 
     @.val.push: $res;
 }
 
 method expr3_:sym<rec> ($/) {
     # --
-    die "Err: type of the operands don't match for '$<b-op3>'"
-        if (my $res = eval $<b-op3>.made, @.val) ~~ Nil;
+    try my $res = eval $<b-op3>.made, @.val;
+    die "Err: type of the operands don't match for '$<b-op3>'" if $!;
 
     @.val.push: $res;
 }
 
 method expr2_:sym<rec> ($/) {
     # --
-    die "Err: type of the operands don't match for '$<b-op2>'"
-        if (my $res = eval $<b-op2>.made, @.val) ~~ Nil;
+    try my $res = eval $<b-op2>.made, @.val;
+    die "Err: type of the operands don't match for '$<b-op2>'" if $!;
 
     @.val.push: $res;
 }
@@ -39,8 +39,8 @@ method expr2_:sym<rec> ($/) {
 # same as binary expressions
 method expr1:sym<unry> ($/) {
     # --
-    die "Err: type of the operand don't match for '$<u-op>'"
-        if (my $res = eval $<u-op>.made, @.val.pop) ~~ Nil;
+    try my $res = eval $<u-op>.made, @.val.pop;
+    die "Err: type of the operand don't match for '$<u-op>'" if $!;
 
     @.val.push: $res;
 }
@@ -62,7 +62,7 @@ method literal:sym<string> ($/) { make $/.Str.substr(1, *-1) } # no " or '
 # this could be way simpler, but doing so in this format embodies a powerful
 # introspection mechanism (see Signature, in the Perl 6 docs)
 method b-op4:sym<\>>   ($/) { make -> Any $a, Any $b --> Bool { $a > $b } }
-method b-op4:sym<'=='> ($/) { make -> Any $a, Any $b --> Bool { $a == $b } }
+method b-op4:sym<'=='> ($/) { make -> Any $a, Any $b --> Bool { $a == $b || $a eq $b } }
 
 method b-op3:sym<->  ($/) { make -> Int $a, Int $b --> Int { $a - $b } }
 method b-op3:sym<+>  ($/) { make -> Int $a, Int $b --> Int { $a + $b } }
