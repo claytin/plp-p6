@@ -26,7 +26,7 @@ sub MAIN (Str :$lang) {
 
             while 1 {
                 say "« " ~ $parser.parse( get-expr()
-                                        , actions => $actions).made ~ " »";
+                                        , actions => $actions).made.gist ~ " »";
             }
         }
 
@@ -36,7 +36,7 @@ sub MAIN (Str :$lang) {
 
             while 1 {
                 say "« " ~ $parser.parse( get-expr()
-                                        , actions => $actions).made ~ " »";
+                                        , actions => $actions).made.gist ~ " »";
             }
         }
 
@@ -46,7 +46,7 @@ sub MAIN (Str :$lang) {
 
             while 1 {
                 say "« " ~ $parser.parse( get-expr()
-                                        , actions => $actions).made ~ " »";
+                                        , actions => $actions).made.gist ~ " »";
             }
         }
 
