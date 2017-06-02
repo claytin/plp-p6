@@ -62,7 +62,11 @@ method literal:sym<string> ($/) { make $/.Str.substr(1, *-1) } # no " or '
 # this could be way simpler, but doing so in this format embodies a powerful
 # introspection mechanism (see Signature, in the Perl 6 docs)
 method b-op4:sym<\>>   ($/) { make -> Any $a, Any $b --> Bool { $a > $b } }
-method b-op4:sym<'=='> ($/) { make -> Any $a, Any $b --> Bool { $a == $b || $a eq $b } }
+method b-op4:sym<==> ($/) {
+     make -> Any $a, Any $b --> Bool {
+          if $a.WHAT === (Int) {$a == $b} else {$a eq $b} 
+     }
+}
 
 method b-op3:sym<->  ($/) { make -> Int $a, Int $b --> Int { $a - $b } }
 method b-op3:sym<+>  ($/) { make -> Int $a, Int $b --> Int { $a + $b } }
