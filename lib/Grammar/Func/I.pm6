@@ -22,4 +22,4 @@ rule expr0:sym<app> { <id> <oparn> <expr-list> <cparn> } # function application
 # Function declaration ##
 rule dec:sym<fun> { <fun> <id> <params> <equal> <expr4> }
      # wich has parameters
-     rule params { <id> <id>* }
+     rule params { <id> + } # the space between <id> and + is necessary

@@ -13,7 +13,6 @@ method dec () { @!env.pop }
 
 # maps an id to a value, for the scope at the top of the environment
 method bind ($id, $val) {
-# fack BabyRage
     !(@!env[@!env.end]{$id}:exists) ?? @!env[@!env.end].push: $id => $val
                                     !!  die "Err: id $id already declared";
 }

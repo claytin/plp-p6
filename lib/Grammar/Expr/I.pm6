@@ -17,7 +17,7 @@ token cparn { ')' }
 # separated by precedence, loosest-tightest
 # Binary
 proto token b-op4 { * }
-      token b-op4:sym<\>>   { <sym> }
+      token b-op4:sym<\>> { <sym> }
       token b-op4:sym<==> { <sym> }
 
 proto token b-op3 { * }

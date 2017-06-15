@@ -1,57 +1,59 @@
-use v6;
+use Grammar::Expr::I; # correspondent grammar
 
-use Grammar::Expr::I;
-use Util::Eval;
+# import of the classes representing the expressions wich can be produced by
+# the Expr::I language
+use Lang::Expr::Value;
+use Lang::Expr::Unary;
+use Lang::Expr::Binary;
 
 unit class Action::Expr::I;
 
-has @.val; # values stack
+## Attributes
+has @.expr; # expressions stack
 
-# just "returns" the evaluation result
-method TOP ($/) { make @.val.pop }
+# call the avaluation method for the expression on the top of the stack
+# "returns" the evaluation result
+method TOP ($/) { make @.expr.pop.eval.value }
 
 # all expr*_:sym<rec> behave similarly;
-# see Util::Evaluator for more information on sub eval
+# they create an expression object, correspondent to the productions match,
+# and push it into the expressions stack
 method expr4_:sym<rec> ($/) {
     # --
-    try my $res = eval $<b-op4>.made, @.val;
-    die "Err: type of the operands don't match for '$<b-op4>'" if $!;
-
-    @.val.push: $res;
+    @.expr.push: Lang::Expr::Binary.new( op    => $<b-op4>.made
+                                       , right => @.expr.pop
+                                       , left  => @.expr.pop );
 }
 
 method expr3_:sym<rec> ($/) {
     # --
-    try my $res = eval $<b-op3>.made, @.val;
-    die "Err: type of the operands don't match for '$<b-op3>'" if $!;
-
-    @.val.push: $res;
+    @.expr.push: Lang::Expr::Binary.new( op    => $<b-op3>.made
+                                       , right => @.expr.pop
+                                       , left  => @.expr.pop );
 }
 
 method expr2_:sym<rec> ($/) {
     # --
-    try my $res = eval $<b-op2>.made, @.val;
-    die "Err: type of the operands don't match for '$<b-op2>'" if $!;
-
-    @.val.push: $res;
+    @.expr.push: Lang::Expr::Binary.new( op    => $<b-op2>.made
+                                       , right => @.expr.pop
+                                       , left  => @.expr.pop );
 }
 
-# same as binary expressions
+# same as the binary expressions
 method expr1:sym<unry> ($/) {
     # --
-    try my $res = eval $<u-op>.made, @.val.pop;
-    die "Err: type of the operand don't match for '$<u-op>'" if $!;
-
-    @.val.push: $res;
+    @.expr.push: Lang::Expr::Unary.new( op   => $<u-op>.made
+                                      , expr => $.expr.pop);
 }
 
-# add the synthesized value to the values stack
-method expr0:sym<val> ($/) { @.val.push: $<value>.made }
+method expr0:sym<val> ($/) {
+    @.expr.push: Lang::Expr::Value.new(value => $<value>.made);
+}
 
 # the value is passed up on the tree
 method value:sym<lit> ($/) { make $<literal>.made }
 
-# for the following methods
+# for the following methods literal:sym*
 # take a match object and cast them into a Perl 6 native value (object)
 method literal:sym<number> ($/) { make $/.Int }
 method literal:sym<bool>   ($/) { $/.Str eq 'true' ?? make Bool::True
@@ -59,13 +61,14 @@ method literal:sym<bool>   ($/) { $/.Str eq 'true' ?? make Bool::True
 method literal:sym<string> ($/) { make $/.Str.substr(1, *-1) } # no " or '
 
 # operators are lamabdas;
-# this could be way simpler, but doing so in this format embodies a powerful
-# introspection mechanism (see Signature, in the Perl 6 docs)
-method b-op4:sym<\>>   ($/) { make -> Any $a, Any $b --> Bool { $a > $b } }
+# these definitions could be way shorter, but doing so in this format embodies
+# a powerful introspection mechanism (see the Perl 6 docs for Signature)
+method b-op4:sym<\>> ($/) { make -> Any $a, Any $b --> Bool { $a > $b } }
 method b-op4:sym<==> ($/) {
-     make -> Any $a, Any $b --> Bool {
-          if $a.WHAT === (Int) {$a == $b} else {$a eq $b} 
-     }
+    # --
+    make -> Any $a, Any $b --> Bool {
+        if $a.WHAT === (Int) {$a == $b} else {$a eq $b}
+    }
 }
 
 method b-op3:sym<->  ($/) { make -> Int $a, Int $b --> Int { $a - $b } }
